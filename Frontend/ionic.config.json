@@ -1,0 +1,7 @@
+{
+  "name": "PsicoAyudaAPK",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "react-vite"
+}

@@ -1,0 +1,139 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
+
+*{
+    margin: 0%;
+    padding: 0%;
+}
+
+.mp{
+    --background: #fefefe;
+    --color: #000;
+}
+
+.container-contenido{
+    margin: 10px 40px;
+}
+
+.centrar-informacion{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    padding-top: 6px;
+}
+
+.centrar-form{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-top: 15px;
+    margin-left: 15px;
+    margin-right: 15px;
+}
+
+.pago{
+    border: 1px solid black;
+    color: black;
+    width: 400px;
+    height: 500px;
+    border-radius: 20px;
+    box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.75);
+    overflow: hidden;
+    font-family: "Roboto", sans-serif;
+}
+
+.formu {
+    display: block;
+    box-sizing: border-box;
+    padding-top: 20px;
+    padding-left: 20px;
+    padding-right: 20px;
+    margin: 10px;
+    flex-direction: column;
+    display: flex;
+}
+
+label{
+    font-family: "Roboto", sans-serif;
+    font-size: 20px;
+    padding-bottom: 10px;
+}
+
+.input-Pago{
+    height: 40px;
+    background: #fff;
+    line-height: 40px;
+    border-radius: 20px;
+    border: none;
+    margin-bottom: 10px;
+    padding: 0px 20px;
+    font-size: 14px;
+    box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.3);
+}
+
+.input-Pago .input-wrapper.sc-ion-input-ios input.sc-ion-input-ios {
+    color: black;
+    text-transform: lowercase;
+    font-size: 16px;
+}
+
+.input-Pago .input-wrapper.sc-ion-input-md input.sc-ion-input-md {
+    color: black;
+    text-transform: uppercase;
+    font-size: 16px;
+}
+
+.cvv .input-wrapper.sc-ion-input-md input.sc-ion-input-md {
+    padding-left: 10px;
+    text-transform: uppercase;
+}
+
+.cvv .input-wrapper.sc-ion-input-ios input.sc-ion-input-ios {
+    padding-left: 10px;
+    text-transform: uppercase;
+}
+
+.container-datos{
+    display: flex;
+    align-items: center;
+}
+
+.container-datos ion-input{
+    width: auto;
+    margin: 7px;
+    text-align: center;
+}
+
+.tarjetas{
+    margin-left: 8px;
+    width: 200px;
+    height: 30px;
+}
+
+.selec-pais{
+    height: 40px;
+    width: 170px;
+    line-height: 40px;
+    border-radius: 20px;
+    border: none;
+    margin-bottom: 10px;
+    padding-left: 10px;
+    font-size: 14px;
+    background-color: #ffffff;
+    box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.3); 
+}
+
+.pagar{
+    --background: #0D00FF;
+    color: #ffffff;
+    border-radius: 30px;
+    margin: auto;
+    padding: 10px;
+    width: 90px;
+    --box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.3);
+    font-size: 10px;
+    text-transform: uppercase;
+    cursor: pointer;
+    position: relative;
+    top: 10px;
+}

@@ -1,0 +1,67 @@
+[
+    {
+      "dia": 9,
+      "mes": 10,
+      "anio": 2024,
+      "inicio": "10:30",
+      "termino": "12:30",
+      "nombre": "Reserva 1"
+    },
+    {
+      "dia": 9,
+      "mes": 10,
+      "anio": 2024,
+      "inicio": "14:30",
+      "termino": "15:30",
+      "nombre": "Reserva 2"
+    },
+    {
+      "dia": 9,
+      "mes": 10,
+      "anio": 2024,
+      "inicio": "16:30",
+      "termino": "17:30",
+      "nombre": "Reserva 3"
+    },
+    {
+      "dia": 13,
+      "mes": 10,
+      "anio": 2024,
+      "inicio": "15:30",
+      "termino": "16:30",
+      "nombre": "Reserva 2"
+    },
+    {
+      "dia": 9,
+      "mes": 11,
+      "anio": 2024,
+      "inicio": "12:30",
+      "termino": "13:30",
+      "nombre": "Reserva 1"
+    },
+    {
+      "dia": 9,
+      "mes": 11,
+      "anio": 2024,
+      "inicio": "16:30",
+      "termino": "17:30",
+      "nombre": "Reserva 2"
+    },
+    {
+      "dia": 14,
+      "mes": 11,
+      "anio": 2024,
+      "inicio": "10:30",
+      "termino": "12:30",
+      "nombre": "Reserva 1"
+    },
+    {
+      "dia": 14,
+      "mes": 11,
+      "anio": 2024,
+      "inicio": "13:30",
+      "termino": "14:30",
+      "nombre": "Reserva 2"
+    }
+  ]
+  

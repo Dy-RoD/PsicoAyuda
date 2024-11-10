@@ -1,0 +1,28 @@
+
+
+.searchPA{
+    --padding-left: 15px;
+    --background: #ECECEC;
+    color: black;
+}
+
+.searchPA Busqueda{
+    padding-top: 5px;
+}
+
+
+.searchbar-left-aligned.sc-ion-searchbar-ios-h .searchbar-input.sc-ion-searchbar-ios{
+    background: #ECECEC;
+    box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.35);
+    color: black;
+}
+
+.searchbar-input.sc-ion-searchbar-md{
+    background: #ECECEC;
+    box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.35);
+    color: black;
+}
+
+.menuBtn{
+    color: black;
+}
