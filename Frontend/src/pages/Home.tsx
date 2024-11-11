@@ -23,26 +23,21 @@ const Home = () => {
     setCaptchaComplete(!!value);
   };
 
-
-
-  const handleSubmit = async () => {
-    if (!captchaComplete) {
-      alert('Por favor, completa el CAPTCHA antes de continuar.');
-    }
-    
-  };
-
-
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log(correo, password);
+    if (!captchaComplete) {
+      alert('Por favor, completa el CAPTCHA antes de continuar.');
+      return;
+    }
     try {
         const response = await axios.post('http://localhost:3000/api/auth/login', {
             "email":correo,
-            "password":password
+            "password":password 
         });
         const { token } = response.data;
-        localStorage.setItem('token', token); // Guardar el token en localStorage
+        console.log('userdata',response.data.userData);
+        localStorage.setItem('token', response.data.token);
+        localStorage.setItem('userData', JSON.stringify(response.data.userData));
         alert('Inicio de sesión exitoso');
         window.location.href = "/Perfil"; // Redireccionar a la página principal al iniciar sesión correctamente
     } catch (err) {

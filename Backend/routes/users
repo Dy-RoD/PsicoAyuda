@@ -1,0 +1,21 @@
+const express = require('express');
+const router = express.Router();
+const db = require('../config/db');
+require('dotenv').config();
+
+router.get('/perfil/:id', (req, res) => {
+    const userId = req.params.id;
+    const query = 'SELECT u.nombre, u.apellido, u.calificacion, GROUP_CONCAT(DISTINCT t.titulo ORDER BY t.titulo DESC) AS titulos , GROUP_CONCAT(DISTINCT e.especialidad ORDER BY e.especialidad DESC) AS especialidades, GROUP_CONCAT(DISTINCT ex.experiencia ORDER BY ex.experiencia DESC) AS experiencias FROM usuarios u LEFT JOIN titulos t ON u.id = t.idUsuario LEFT JOIN especialidades e ON u.id = e.idUsuario LEFT JOIN experiencias ex ON u.id = ex.idUsuario WHERE u.id = ? GROUP BY u.id;'
+    db.query(query, [userId], (err, results) => {
+      if (err) return res.status(500).json({ error: 'Error al obtener los datos' });
+      if (results.length === 0) return res.status(404).json({ error: 'Usuario no encontrado' });
+      const { nombre, apellido, calificacion, titulos, especialidades, experiencias } = results[0];
+      const titulosArray = titulos ? titulos.split(',') : [];
+      const especialidadesArray = especialidades ? especialidades.split(',') : [];
+      const experienciaasArray = experiencias ? experiencias.split(',') : [];
+
+      res.json({ nombre, apellido, calificacion, titulos: titulosArray, especialidades: especialidadesArray, experiencias: experienciaasArray });
+    });
+  });
+
+module.exports = router;

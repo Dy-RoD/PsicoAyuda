@@ -24,7 +24,10 @@ router.post('/login', (req, res) => {
             expiresIn: '1h'
         });
 
-        res.json({ token });
+        res.json({ 
+            token, 
+            userData: user.id
+        });
     });
 });
 

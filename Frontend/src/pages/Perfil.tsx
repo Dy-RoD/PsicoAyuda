@@ -1,9 +1,40 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { IonPage, IonHeader, IonToolbar, IonTitle, IonContent, IonFooter, IonButton, IonIcon, IonButtons, IonImg, IonMenuButton } from '@ionic/react';
 import { star, lockClosed } from 'ionicons/icons';
 import './Perfil.css';
+import axios from 'axios';
 
 const Perfil: React.FC = () => {
+  const [userData, setUserData] = useState(null);
+  const [nombre, setNombre] = useState('');
+  const [apellido, setApellido] = useState('');
+  const [titulos, setTitulos] = useState([]);
+  const [foto, setFoto] = useState('');
+  const [calificacion, setCalificacion] = useState('');
+  const [especialidades, setEspecialidades] = useState([]);
+  const [experiencias, setExperiencias] = useState([]);
+  const [recomendaciones, setRecomendaciones] = useState([]);
+  const [comentarios, setComentarios] = useState([]);
+
+  useEffect(() => {
+    const userId = localStorage.getItem('userData');
+    axios.get(`http://localhost:3000/api/users/perfil/${userId}`, { 
+    })
+    .then(response => {
+      
+      setUserData(response.data);
+      setNombre(response.data.nombre);
+      setApellido(response.data.apellido);
+      setCalificacion(response.data.calificacion);
+      setTitulos(response.data.titulos);
+      setEspecialidades(response.data.especialidades);
+      setExperiencias(response.data.experiencias);
+    })
+    .catch(error => {
+      console.error(error);
+      alert("Error al obtener los datos del usuario.");
+    });
+  }, []);
   return (
     <IonPage>
         <IonHeader>
@@ -19,8 +50,8 @@ const Perfil: React.FC = () => {
           <section className="seccionUsuario">
             <div className="container-Usuario">
               <img className="perfilIMG" src="../assets/images/imagePerfil.svg" alt="perfil" />
-              <h1 className="nombre">Lupita Rodriguez</h1>
-              <h2 className="calificaciones">4.5/5 <IonIcon icon={star} /></h2>
+              <h1 className="nombre" autoCapitalize='true'>{nombre} {apellido}</h1>
+              <h2 className="calificaciones">{calificacion}/5 <IonIcon icon={star} /></h2>
             </div>
             <div className="contBt">
               <IonButton className="reservaBt" routerLink="./Calendario">¡Reserva!</IonButton>
@@ -32,7 +63,11 @@ const Perfil: React.FC = () => {
             <div className="container-Titulos">
               <h2 className="titulo">Títulos</h2>
               <ul>
-                <li><img className="star" src="../assets/images/starSelect.png" alt="estrella" /> Psicología - Pontificia Universidad Católica de Valparaíso.</li>
+                {titulos.map((titulo, index) => (
+                  <li key={index}>
+                    <img className="star" src="../assets/images/starSelect.png" alt="estrella" /> {titulo}
+                  </li>
+                ))}
               </ul>
             </div>
             <hr />
@@ -43,7 +78,11 @@ const Perfil: React.FC = () => {
             <div className="container-Especialidades">
               <h2>Especialidades</h2>
               <ul>
-                <li><img className="star" src="../assets/images/starSelect.png" alt="estrella" /> Psicología de Pareja y Familiar.</li>
+                {especialidades.map((especialidad, index) => (
+                  <li key={index}>
+                    <img className="star" src="../assets/images/starSelect.png" alt="estrella" /> {especialidad}
+                  </li>
+                ))}
               </ul>
             </div>
             <hr />
@@ -54,7 +93,12 @@ const Perfil: React.FC = () => {
             <div className="container-Experiencias">
               <h2>Experiencias</h2>
               <ul>
-                <li><img className="star" src="../assets/images/starSelect.png" alt="estrella" /> 5 años en activo funcionamiento dentro del área.</li>
+                {experiencias.map((experiencia, index) => (
+                  <li key={index}>
+                    <img className="star" src="../assets/images/starSelect.png" alt="estrella" /> {experiencia}
+                  </li>
+                ))}
+                <li></li>
               </ul>
             </div>
             <hr />
