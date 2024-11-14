@@ -71,7 +71,7 @@ const Registrarse = () => {
         const { token } = response.data;
         localStorage.setItem('token', token); // Guardar el token en localStorage
         alert('Registro exitoso');
-        window.location.href = "/Login"; // Redireccionar a la página principal al registrarse correctamente
+        window.location.href = "/Home"; // Redireccionar a la página principal al registrarse correctamente
     } catch (err) {
       console.error("Error al registrarse", err);
       alert('Datos incorrectos');

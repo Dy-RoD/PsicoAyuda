@@ -88,14 +88,20 @@
     padding-top: 20px;
 }
 
+/*.container-Recomendacion 
 .container-Recomendaciones ul li{
     color: transparent;
     text-shadow: 1px 1px 6px #000000;
     padding-bottom: 20px;
 }
 
+
 .container-Recomendaciones ul li img{
     filter: blur(3px);
+}
+*/
+.container-Recomendaciones ul li{
+    padding-top: 20px;
 }
 
 .container-Comentarios{

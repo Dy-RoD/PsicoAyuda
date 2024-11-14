@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { IonPage, IonHeader, IonToolbar, IonTitle, IonContent, IonFooter, IonButton, IonIcon, IonButtons, IonImg, IonMenuButton } from '@ionic/react';
-import { star, lockClosed } from 'ionicons/icons';
+import { star, heartOutline } from 'ionicons/icons';
 import './Perfil.css';
 import axios from 'axios';
 
@@ -107,7 +107,7 @@ const Perfil: React.FC = () => {
           {/* Sección Recomendaciones */}
           <section className="seccionRecomendaciones">
             <div className="container-Recomendaciones">
-              <h2><IonIcon icon={lockClosed} /> Recomendaciones</h2>
+              <h2><IonIcon icon={heartOutline} /> Recomendaciones</h2>
               <ul>
                 <li><img className="star" src="../assets/images/starSelect.png" alt="estrella" /> 
                   Consejos para una buena convivencia: 

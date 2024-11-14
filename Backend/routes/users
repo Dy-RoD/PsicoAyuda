@@ -18,4 +18,32 @@ router.get('/perfil/:id', (req, res) => {
     });
   });
 
+  router.get('/recomendacionesPro/:id', (req, res) => {
+    const userId = req.params.id;
+    const query = 'SELECT c.nombre, c.apellido, GROUP_CONCAT(CONCAT(r.descripcion, r.url) ORDER BY r.descripcion DESC) AS recomendaciones FROM usuarios u LEFT JOIN recomendaciones r ON u.id = r.idProfesional LEFT JOIN usuarios c ON r.idCliente = c.id WHERE u.id = ? GROUP BY c.id';
+  
+    db.query(query, [userId], (err, results) => {
+      if (err) return res.status(500).json({ error: 'Error al obtener los datos' });
+      if (results.length === 0) return res.status(404).json({ error: 'Usuario no encontrado' });
+  
+      // Formateamos los resultados para la respuesta
+      const response = results.map(result => {
+        const { nombre, apellido, recomendaciones } = result;
+        // Convertimos las recomendaciones en un arreglo de objetos con descripcion y url
+        const recomendacionesArray = recomendaciones ? recomendaciones.split(',').map(r => {
+          const [descripcion, url] = r.split(' ');
+          return { descripcion, url };
+        }) : [];
+        return {
+          nombre: nombre,
+          apellido: apellido,
+          recomendaciones: recomendacionesArray
+        };
+      });
+  
+      res.json(response);
+    });
+  });
+  
+
 module.exports = router;

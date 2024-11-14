@@ -32,7 +32,7 @@ function Menu() {
         <IonContent className="ion-padding">
         <IonList>
             <IonItem>
-                <IonButton className='menuBtn' routerLink="/Home">Inicio</IonButton>
+                <IonButton className='menuBtn' routerLink="/Perfil">Inicio</IonButton>
             </IonItem>
             <IonItem>
                 <IonButton className='menuBtn'>Servicios</IonButton>
