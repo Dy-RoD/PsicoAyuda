@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 14, 2024 at 05:32 AM
+-- Generation Time: Nov 19, 2024 at 03:19 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -20,6 +20,26 @@ SET time_zone = "+00:00";
 --
 -- Database: `psicoayuda`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `comentarios`
+--
+
+CREATE TABLE `comentarios` (
+  `id` int(11) NOT NULL,
+  `comentario` varchar(255) NOT NULL,
+  `idProfesional` int(11) NOT NULL,
+  `idCliente` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `comentarios`
+--
+
+INSERT INTO `comentarios` (`id`, `comentario`, `idProfesional`, `idCliente`) VALUES
+(1, '¡Recomendadísima! Mi pareja y yo pudimos salir adelante después de su ayuda a través de las sesiones.', 5, 7);
 
 -- --------------------------------------------------------
 
@@ -81,7 +101,42 @@ CREATE TABLE `recomendaciones` (
 INSERT INTO `recomendaciones` (`id`, `descripcion`, `url`, `idProfesional`, `idCliente`) VALUES
 (1, 'Consejos para una buena convivencia:', 'https://www.youtube.com/watch?v=dQw4w9WgXcQ', 5, 7),
 (2, 'Artículo sobre relaciones sanas:', 'https://es.wikipedia.org/wiki/No-Utilizar-Wikipedia-Como-Fuente', 5, 7),
-(3, 'prueba descripcion', 'prueba de url', 5, 6);
+(3, 'prueba descripcion', 'prueba de url', 5, 6),
+(4, 'descripcion de la recomendacion', 'url-de-la-recomendacion', 5, 7),
+(5, 'admin descripcion', 'admin url', 5, 1);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `reservas`
+--
+
+CREATE TABLE `reservas` (
+  `id` int(11) NOT NULL,
+  `dia` int(11) NOT NULL,
+  `mes` int(11) NOT NULL,
+  `anio` int(11) NOT NULL,
+  `inicio` varchar(5) NOT NULL,
+  `termino` varchar(5) NOT NULL,
+  `nombre` varchar(255) NOT NULL,
+  `visible` tinyint(1) NOT NULL,
+  `idUsuario` int(11) NOT NULL,
+  `idCliente` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `reservas`
+--
+
+INSERT INTO `reservas` (`id`, `dia`, `mes`, `anio`, `inicio`, `termino`, `nombre`, `visible`, `idUsuario`, `idCliente`) VALUES
+(1, 9, 10, 2024, '10:30', '12:30', 'Reserva 1', 1, 5, 1),
+(2, 9, 10, 2024, '14:30', '15:30', 'Reserva 2', 1, 5, 1),
+(3, 9, 11, 2024, '12:30', '13:30', 'Reserva Dylan Rodriguez', 1, 5, 1),
+(4, 9, 11, 2024, '16:30', '17:30', 'Reserva Lale Man', 1, 5, 6),
+(5, 14, 11, 2024, '10:30', '12:30', 'Reserva 1', 1, 5, 1),
+(6, 14, 11, 2024, '13:30', '14:30', 'Reserva 2', 1, 5, 6),
+(7, 19, 12, 2024, '13:30', '14:30', 'hola mundo', 1, 5, 1),
+(8, 9, 12, 2024, '17:10', '18:20', 'examen', 1, 5, 1);
 
 -- --------------------------------------------------------
 
@@ -128,14 +183,23 @@ CREATE TABLE `usuarios` (
 --
 
 INSERT INTO `usuarios` (`id`, `nombre`, `apellido`, `rut`, `region`, `email`, `fono`, `fotoPerfil`, `password`, `tipoUsuario`, `calificacion`) VALUES
-(1, 'Dylan', 'Rodriguez', '21233531-2', 'valparaiso', 'dylanrod159@gmail.com', '123123123', NULL, '$2a$10$ylvFl.mjr4pm671U8bkkMuKOktjo/jdA98hysrqA12W00MNZaKtYq', 'admin', NULL),
-(5, 'lupita', 'rodriguez', '13244478-9', 'Valparaiso', 'lupita@prueba', '+56988888888', NULL, '$2a$10$O2LrSRzI7V/sdFW2.m/IhuIFBZCDF1KYNHO8hJaOArNXp5bC3StOm', 'profesional', 4.7),
-(6, 'lale', 'anabalon', '18239223-5', 'metropolitana', 'lale@man.com', '+56969696969', NULL, '$2a$10$pqFeXRuGTQWgIMQZKowYpuMqBH4GJsrxxSoTEvoJPimqqNLsDO/82', 'profesional', 4.5),
-(7, 'Bella', 'Kodpher', '11111111-1', 'metropolitana', 'bellaKodpher@gmail.com', '945345345', NULL, '$2a$10$WxwS9rxSdkWq5ze/q.VyGO3t2mNin7WO13oe5LJLhWLU6TYdvIO5W', 'cliente', NULL);
+(1, 'Dylan', 'Rodriguez', '21233531-2', 'valparaiso', 'dylanrod159@gmail.com', '123123123', NULL, '$2a$10$0XnYrl1ab081Y9igOvrOhusu.v/fF1a/T6hcYyUQobAUAMImhEeSm', 'admin', 4.9),
+(5, 'lupita', 'rodriguez', '13244478-9', 'valparaiso', 'lupita@prueba', '+56988888888', NULL, '$2a$10$O2LrSRzI7V/sdFW2.m/IhuIFBZCDF1KYNHO8hJaOArNXp5bC3StOm', 'profesional', 4.5),
+(6, 'lale', 'anabalon', '18239223-5', 'valparaiso', 'lale@man.com', '+56969696969', NULL, '$2a$10$pqFeXRuGTQWgIMQZKowYpuMqBH4GJsrxxSoTEvoJPimqqNLsDO/82', 'profesional', 4.9),
+(7, 'Bella', 'Kodpher', '11111111-1', 'metropolitana', 'bellaKodpher@gmail.com', '945345345', NULL, '$2a$10$WxwS9rxSdkWq5ze/q.VyGO3t2mNin7WO13oe5LJLhWLU6TYdvIO5W', 'cliente', 4.9);
 
 --
 -- Indexes for dumped tables
 --
+
+--
+-- Indexes for table `comentarios`
+--
+ALTER TABLE `comentarios`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `id` (`id`),
+  ADD KEY `idProfesional` (`idProfesional`),
+  ADD KEY `idCliente` (`idCliente`);
 
 --
 -- Indexes for table `especialidades`
@@ -163,6 +227,14 @@ ALTER TABLE `recomendaciones`
   ADD KEY `idCliente` (`idCliente`);
 
 --
+-- Indexes for table `reservas`
+--
+ALTER TABLE `reservas`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `id` (`id`),
+  ADD KEY `idUsuario` (`idUsuario`);
+
+--
 -- Indexes for table `titulos`
 --
 ALTER TABLE `titulos`
@@ -182,6 +254,12 @@ ALTER TABLE `usuarios`
 --
 
 --
+-- AUTO_INCREMENT for table `comentarios`
+--
+ALTER TABLE `comentarios`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
 -- AUTO_INCREMENT for table `especialidades`
 --
 ALTER TABLE `especialidades`
@@ -197,7 +275,13 @@ ALTER TABLE `experiencias`
 -- AUTO_INCREMENT for table `recomendaciones`
 --
 ALTER TABLE `recomendaciones`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+
+--
+-- AUTO_INCREMENT for table `reservas`
+--
+ALTER TABLE `reservas`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT for table `titulos`
@@ -214,6 +298,13 @@ ALTER TABLE `usuarios`
 --
 -- Constraints for dumped tables
 --
+
+--
+-- Constraints for table `comentarios`
+--
+ALTER TABLE `comentarios`
+  ADD CONSTRAINT `comentarios_ibfk_1` FOREIGN KEY (`idProfesional`) REFERENCES `usuarios` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `comentarios_ibfk_2` FOREIGN KEY (`idCliente`) REFERENCES `usuarios` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `especialidades`
@@ -236,6 +327,12 @@ ALTER TABLE `experiencias`
 ALTER TABLE `recomendaciones`
   ADD CONSTRAINT `recomendaciones_ibfk_1` FOREIGN KEY (`idProfesional`) REFERENCES `usuarios` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `recomendaciones_ibfk_2` FOREIGN KEY (`idCliente`) REFERENCES `usuarios` (`id`);
+
+--
+-- Constraints for table `reservas`
+--
+ALTER TABLE `reservas`
+  ADD CONSTRAINT `reservas_ibfk_1` FOREIGN KEY (`idUsuario`) REFERENCES `usuarios` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `titulos`

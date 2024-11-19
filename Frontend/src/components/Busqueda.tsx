@@ -1,51 +1,65 @@
 import React, { useState } from 'react';
 import { IonItem, IonList, IonSearchbar } from '@ionic/react';
+import { useHistory } from 'react-router-dom'; // Para redireccionar
 import "./Busqueda.css";
 
-
 function Busqueda() {
-  const data = [
-    'Valparaiso',
-    'Santiago',
-    'Lupita Rodriguez',
-    'Bella Kodpher',
-    'Sugerencias a tiempo real!',
-  ];
+  const regionMap: Record<string, string> = {
+    'Arica y Parinacota': 'arica_y_parinacota',
+    'Tarapacá': 'tarapaca',
+    'Antofagasta': 'antofagasta',
+    'Atacama': 'atacama',
+    'Coquimbo': 'coquimbo',
+    'Valparaíso': 'valparaiso',
+    'Metropolitana de Santiago': 'metropolitana',
+    "O'Higgins": 'ohiggins',
+    'Maule': 'maule',
+    'Ñuble': 'nuble',
+    'Biobío': 'biobio',
+    'La Araucanía': 'la_arauncania',
+    'Los Ríos': 'los_rios',
+    'Los Lagos': 'los_lagos',
+    'Aysén': 'aysen',
+    'Magallanes': 'magallanes',
+  };
 
-  // Estados para los resultados y la consulta de búsqueda
   const [results, setResults] = useState<string[]>([]);
-  const [query, setQuery] = useState<string>('');  // Estado para la consulta
+  const [query, setQuery] = useState<string>('');
+  const history = useHistory();
 
-  // Manejar la entrada del usuario
   const handleInput = (ev: Event) => {
     const target = ev.target as HTMLIonSearchbarElement;
     const queryValue = target?.value?.toLowerCase() || '';
 
-    setQuery(queryValue);  // Actualizar la consulta
+    setQuery(queryValue);
     if (queryValue) {
-      // Filtrar los datos solo si hay algo escrito
-      setResults(data.filter((d) => d.toLowerCase().indexOf(queryValue) > -1));
+      setResults(Object.keys(regionMap).filter((region) => region.toLowerCase().includes(queryValue)));
     } else {
-      // Si la consulta está vacía, no mostrar resultados
       setResults([]);
     }
+  };
+
+  const handleRegionClick = (region: string) => {
+    const regionValue = regionMap[region as keyof typeof regionMap]; // Hacemos que TypeScript entienda que region es una clave válida
+    history.push(`/profesionales/${regionValue}`);
   };
 
   return (
     <>
       <IonSearchbar
-        className='barraSearch'
-        placeholder="Psicólogos o Regiones!"
+        className="barraSearch"
+        placeholder="Busca por Regiones!"
         showClearButton="focus"
         debounce={1000}
         onIonInput={(ev: Event) => handleInput(ev)}
       ></IonSearchbar>
 
-      {/* Mostrar los resultados solo si hay una consulta */}
       {query && (
         <IonList>
           {results.map((result, index) => (
-            <IonItem key={index}>{result}</IonItem>
+            <IonItem key={index} button onClick={() => handleRegionClick(result)}>
+              {result}
+            </IonItem>
           ))}
         </IonList>
       )}

@@ -77,8 +77,9 @@ ion-item.check{
     --color: #ffffff;
 }
 
-a{
+.tyc{
     color: #ffffff;
+    font-size: 0.9rem;
 }
 
 ion-button.submit{

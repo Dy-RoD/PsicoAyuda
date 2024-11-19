@@ -149,7 +149,7 @@ const Registrarse = () => {
               </IonItem>
               <IonItem lines="none" className="check">
                 <IonCheckbox id="tycCheckbox" />
-                <IonLabel><a href="#tyc">Términos y condiciones</a></IonLabel>
+                <IonLabel><a className='tyc' href="#tyc">Términos y condiciones</a></IonLabel>
               </IonItem>
               <div className='captcha'>
                 <ReCAPTCHA

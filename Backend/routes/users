@@ -5,22 +5,22 @@ require('dotenv').config();
 
 router.get('/perfil/:id', (req, res) => {
     const userId = req.params.id;
-    const query = 'SELECT u.nombre, u.apellido, u.calificacion, GROUP_CONCAT(DISTINCT t.titulo ORDER BY t.titulo DESC) AS titulos , GROUP_CONCAT(DISTINCT e.especialidad ORDER BY e.especialidad DESC) AS especialidades, GROUP_CONCAT(DISTINCT ex.experiencia ORDER BY ex.experiencia DESC) AS experiencias FROM usuarios u LEFT JOIN titulos t ON u.id = t.idUsuario LEFT JOIN especialidades e ON u.id = e.idUsuario LEFT JOIN experiencias ex ON u.id = ex.idUsuario WHERE u.id = ? GROUP BY u.id;'
+    const query = 'SELECT u.nombre, u.apellido, u.fono, u.calificacion, GROUP_CONCAT(DISTINCT t.titulo ORDER BY t.titulo DESC) AS titulos , GROUP_CONCAT(DISTINCT e.especialidad ORDER BY e.especialidad DESC) AS especialidades, GROUP_CONCAT(DISTINCT ex.experiencia ORDER BY ex.experiencia DESC) AS experiencias FROM usuarios u LEFT JOIN titulos t ON u.id = t.idUsuario LEFT JOIN especialidades e ON u.id = e.idUsuario LEFT JOIN experiencias ex ON u.id = ex.idUsuario WHERE u.id = ? GROUP BY u.id;'
     db.query(query, [userId], (err, results) => {
       if (err) return res.status(500).json({ error: 'Error al obtener los datos' });
       if (results.length === 0) return res.status(404).json({ error: 'Usuario no encontrado' });
-      const { nombre, apellido, calificacion, titulos, especialidades, experiencias } = results[0];
+      const { nombre, apellido, fono, calificacion, titulos, especialidades, experiencias } = results[0];
       const titulosArray = titulos ? titulos.split(',') : [];
       const especialidadesArray = especialidades ? especialidades.split(',') : [];
       const experienciaasArray = experiencias ? experiencias.split(',') : [];
 
-      res.json({ nombre, apellido, calificacion, titulos: titulosArray, especialidades: especialidadesArray, experiencias: experienciaasArray });
+      res.json({ nombre, apellido, fono, calificacion, titulos: titulosArray, especialidades: especialidadesArray, experiencias: experienciaasArray });
     });
   });
 
   router.get('/recomendacionesPro/:id', (req, res) => {
     const userId = req.params.id;
-    const query = 'SELECT c.nombre, c.apellido, GROUP_CONCAT(CONCAT(r.descripcion, r.url) ORDER BY r.descripcion DESC) AS recomendaciones FROM usuarios u LEFT JOIN recomendaciones r ON u.id = r.idProfesional LEFT JOIN usuarios c ON r.idCliente = c.id WHERE u.id = ? GROUP BY c.id';
+    const query = 'SELECT c.nombre, c.apellido, GROUP_CONCAT(CONCAT(r.descripcion, "|", r.url) SEPARATOR ";") AS recomendaciones FROM usuarios u LEFT JOIN recomendaciones r ON u.id = r.idProfesional LEFT JOIN usuarios c ON r.idCliente = c.id WHERE u.id = ? GROUP BY c.id';
   
     db.query(query, [userId], (err, results) => {
       if (err) return res.status(500).json({ error: 'Error al obtener los datos' });
@@ -30,9 +30,9 @@ router.get('/perfil/:id', (req, res) => {
       const response = results.map(result => {
         const { nombre, apellido, recomendaciones } = result;
         // Convertimos las recomendaciones en un arreglo de objetos con descripcion y url
-        const recomendacionesArray = recomendaciones ? recomendaciones.split(',').map(r => {
-          const [descripcion, url] = r.split(' ');
-          return { descripcion, url };
+        const recomendacionesArray = recomendaciones ? recomendaciones.split(';').map(r => {
+          const [descripcion, url] = r.split('|');
+          return { descripcion: descripcion?.trim(), url: url?.trim() };
         }) : [];
         return {
           nombre: nombre,
@@ -44,6 +44,112 @@ router.get('/perfil/:id', (req, res) => {
       res.json(response);
     });
   });
+
+  router.get('/recomendacionesCli/:id', (req, res) => {
+    const userId = req.params.id;
+    const query = 'SELECT c.nombre, c.apellido, GROUP_CONCAT(CONCAT(r.descripcion, "|", r.url) SEPARATOR ";") AS recomendaciones FROM usuarios u LEFT JOIN recomendaciones r ON u.id = r.idCliente LEFT JOIN usuarios c ON r.idProfesional = c.id WHERE u.id = ? GROUP BY c.id;';
   
+    db.query(query, [userId], (err, results) => {
+      if (err) return res.status(500).json({ error: 'Error al obtener los datos' });
+      if (results.length === 0) return res.status(404).json({ error: 'Usuario no encontrado' });
+  
+      // Formateamos los resultados para la respuesta
+      const response = results.map(result => {
+        const { nombre, apellido, recomendaciones } = result;
+        // Convertimos las recomendaciones en un arreglo de objetos con descripcion y url
+        const recomendacionesArray = recomendaciones ? recomendaciones.split(';').map(r => {
+          const [descripcion, url] = r.split('|');
+          return { descripcion: descripcion?.trim(), url: url?.trim() };
+        }) : [];
+        return {
+          nombre: nombre,
+          apellido: apellido,
+          recomendaciones: recomendacionesArray
+        };
+      });
+  
+      res.json(response);
+    });
+  });
+
+  router.get('/comentarios/:id', (req, res) => {
+    const userId = req.params.id;
+    const query = 'SELECT cl.nombre, cl.apellido, c.comentario FROM usuarios u LEFT JOIN comentarios c ON u.id = c.idProfesional LEFT JOIN usuarios cl ON c.idCliente = cl.id WHERE u.id = ? GROUP BY c.id';
+    
+
+    db.query(query, [userId], (err, results) => {
+      if (err) return res.status(500).json({ error: 'Error al obtener los datos' });
+      if (results.length === 0) return res.status(404).json({ error: 'Usuario no encontrado' });
+      res.json(results)
+    });
+  });
+  
+
+  router.get('/reservas/:userId', (req, res) => {
+    const userId = req.params.userId;
+  
+    const query = `SELECT r.id, r.dia, r.mes, r.anio, r.inicio, r.termino, r.nombre  FROM usuarios u JOIN reservas r on r.idUsuario = u.id WHERE u.id = ? AND r.visible = true;`;
+    db.query(query, [userId], (err, results) => {
+      if (err) {
+        console.error("Error al obtener las reservas:", err);
+        return res.status(500).json({ error: "Error al obtener las reservas" });
+      }
+  
+      res.json(results);
+    });
+  });
+
+  router.get('/reservasCli/:userId', (req, res) => {
+    const userId = req.params.userId;
+  
+    const query = `SELECT r.id, r.dia, r.mes, r.anio, r.inicio, r.termino, r.nombre FROM usuarios u JOIN reservas r on r.idCliente = u.id WHERE u.id = ? AND r.visible = true;`;
+    db.query(query, [userId], (err, results) => {
+      if (err) {
+        console.error("Error al obtener las reservas:", err);
+        return res.status(500).json({ error: "Error al obtener las reservas" });
+      }
+  
+      res.json(results);
+    });
+  });
+
+  router.put('/delReserva/:idReserva', async (req, res) => {
+    const userId = req.params.idReserva;
+    const query = `UPDATE reservas SET visible = False WHERE id = ?`
+    db.query(query, [userId], (err, results) => {
+      if (err) {
+        console.error("Error al eliminar la reserva", err);
+        return res.status(500).json({ error: "Error al eliminar la reserva" });
+      }
+    })
+    res.json({ success: true});
+  });
+
+  router.put('/addReserva', async (req, res) => {
+    const {dia,mes,anio,inicio,termino,nombre,idUsuario,idCliente} = req.body;
+    const query = `INSERT INTO reservas(dia, mes, anio, inicio, termino, nombre, visible, idUsuario, idCliente) VALUES (?,?,?,?,?,?,?,?,?)`
+    db.query(query, [dia,mes,anio,inicio,termino,nombre,true,idUsuario,idCliente], (err, results) => {
+      if (err) {
+        console.error("Error al agregar la reserva", err);
+        return res.status(500).json({ error: "Error del servidor al agregar la reserva" });
+      }
+    })
+    res.json({ success: true});
+  });
+
+  router.get('/profesionales/:region', (req, res) => {
+    const region = req.params.region;
+  
+    const query = `SELECT u.id, u.nombre, u.apellido, u.calificacion, u.fotoPerfil  FROM  usuarios u WHERE u.region = ? AND u.tipoUsuario = 'profesional' ORDER BY u.calificacion DESC;`;
+  
+    db.query(query, [region], (err, results) => {
+      if (err) {
+        console.error('Error al obtener los profesionales:', err);
+        return res.status(500).json({ error: 'Error al obtener los profesionales' });
+      }
+  
+      res.json(results);
+    });
+  });
 
 module.exports = router;

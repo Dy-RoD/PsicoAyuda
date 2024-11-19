@@ -3,6 +3,9 @@ import { IonPage, IonHeader, IonToolbar, IonTitle, IonContent, IonInput, IonLabe
 import './MetodoPago.css'; // Asegúrate de crear un archivo de estilos separado para los estilos específicos.
 
 const MetodoPago = () => {
+  if (!localStorage.getItem('token')) {
+    window.location.href = '/home';
+  }
   return (
     <IonPage>
       <IonHeader>

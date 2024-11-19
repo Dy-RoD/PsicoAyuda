@@ -14,8 +14,14 @@ function Menu() {
       // Eliminar el token de localStorage al cerrar sesión
       localStorage.removeItem('token');
       localStorage.removeItem('userData');
+      localStorage.removeItem('profesionalSeleccionado');
       setIsAuthenticated(false);
       window.location.href = "/Home";
+    };
+
+    const handlePerfil = () => {
+      localStorage.removeItem('profesionalSeleccionado');
+      window.location.href = "/Perfil";
     };
   return (
     <>
@@ -43,7 +49,7 @@ function Menu() {
             {isAuthenticated ? (
               <>
                 <IonItem>
-                  <IonButton className='menuBtn' routerLink="/Perfil">Mi Perfil</IonButton>
+                  <IonButton className='menuBtn' onClick={handlePerfil}>Mi Perfil</IonButton>
                 </IonItem>
                 <IonItem>
                   <IonButton className='menuBtn' onClick={handleLogout}>Cerrar Sesión</IonButton>

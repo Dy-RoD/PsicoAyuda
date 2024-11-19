@@ -33,11 +33,11 @@ import '@ionic/react/css/display.css';
 import './theme/variables.css';
 import Registrarse from './pages/Registrarse';
 import MetodoPago from './pages/MetodoPago';
-import Chatea from './pages/Chatea';
 import Menu from './components/Menu';
 import Busqueda from './components/Busqueda';
 import Calendario from './pages/Calendario';
 import Perfil from './pages/Perfil';
+import Profesionales from './pages/Profesionales';
 
 setupIonicReact();
 
@@ -59,15 +59,13 @@ const App: React.FC = () => (
         <Route exact path="/MetodoPago">
           <MetodoPago />
         </Route>
-        <Route exact path="/Chatea">
-          <Chatea />
-        </Route>
         <Route exact path="/Calendario">
           <Calendario />
         </Route>
         <Route exact path="/Perfil">
           <Perfil />
         </Route>
+        <Route path="/profesionales/:region" component={Profesionales} />
       </IonRouterOutlet>
     </IonReactRouter>
   </IonApp>

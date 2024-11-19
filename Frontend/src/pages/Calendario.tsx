@@ -16,11 +16,16 @@ import {
   IonInput,
   IonIcon,
   IonFooter,
+  IonModal,
 } from '@ionic/react';
 import './Calendario.css';
-import { balloonOutline, calendarOutline, arrowBackOutline, arrowForwardOutline, closeOutline } from 'ionicons/icons';
+import { balloonOutline, calendarOutline, arrowBackOutline, arrowForwardOutline, closeOutline, key } from 'ionicons/icons';
+import axios from 'axios';
 
 const Calendario = () => {
+  if (!localStorage.getItem('token')) {
+    window.location.href = '/home';
+  }
   const ArrMeses = [
     "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
   ];
@@ -32,7 +37,7 @@ const Calendario = () => {
   const [diaHoy, setDiaHoy] = useState(hoy.getDate());
   const [seleccionado, setSeleccionado] = useState(false);
   const [fechaInput, setFechaInput] = useState('');
-  const [arrEventos, setArrEventos] = useState<any[]>([]);
+  let [arrEventos, setArrEventos] = useState<any[]>([]);
   const [nombreEvento, setNombreEvento] = useState('');
   const [inicioEvento, setInicioEvento] = useState('');
   const [terminoEvento, setTerminoEvento] = useState('');
@@ -40,23 +45,40 @@ const Calendario = () => {
   const [diaEvento, setDiaEvento] = useState('');
   const [fechaEvento, setFechaEvento] = useState('');let inicio = 1;
   const [eventosDelDia, setEventosDelDia] = useState<any[]>([]);
-
+  const [selectedEventId, setSelectedEventId] = useState<number | null>(null);
+  const [showDelModal, setShowDelModal] = useState(false);
+  let userId;
   // Nueva función para cargar los eventos desde el archivo JSON
   useEffect(() => {
-    // Función para leer el archivo JSON
     const cargarEventos = async () => {
+      if (localStorage.getItem('profesionalSeleccionado')) {
+        userId = localStorage.getItem('profesionalSeleccionado');
+      }
+      else {
+        userId = localStorage.getItem('userData');
+      }
+
       try {
-        const response = await fetch('/assets/json/eventos.json'); // Ruta al archivo JSON
-        const data = await response.json(); // Convertir la respuesta a JSON
-        setArrEventos(data); // Guardar los datos en el estado
+        if (localStorage.getItem('profesionalSeleccionado')) {
+        const response = await axios.get(`http://localhost:3000/api/users/reservas/${userId}`);
+        setArrEventos(response.data);
+        }
+        else {
+          if(localStorage.getItem('token.tipoUsuario') === 'profesional') {
+            const response = await axios.get(`http://localhost:3000/api/users/reservas/${userId}`);
+            setArrEventos(response.data);
+          } else {
+            const response = await axios.get(`http://localhost:3000/api/users/reservasCli/${userId}`);
+            setArrEventos(response.data);
+          }
+        }
       } catch (error) {
-        console.error("Error al cargar el archivo JSON", error);
+        console.error("Error al cargar los datos del servidor", error);
       }
     };
 
     cargarEventos();
   }, []);
-
   // Función para actualizar la fecha del día seleccionado
   const [diaSeleccionado, setDiaSeleccionado] = useState<string | null>(null);
   
@@ -237,8 +259,8 @@ const Calendario = () => {
         ) {
             // Si hay eventos, se preparan para mostrar en pantalla
             eventos.push(
-                <div className="evento" key={evento.nombre}>
-                    <div className="titulo">
+                <div className="evento" key={evento.id} onClick={() =>{ setSelectedEventId(evento.id); setShowDelModal(true);}} >
+                    <div className="titulo" >
                         <i className="bi bi-balloon-heart"></i>
                         <h3 className="titulo-evento">{evento.nombre}</h3>
                     </div>
@@ -263,6 +285,54 @@ const Calendario = () => {
     setEventosDelDia(eventos);
   };
 
+  const  handleDelEvento = async () => {
+    if (selectedEventId !== null) {
+      try {
+        const response = await axios.put(`http://localhost:3000/api/users/delReserva/${selectedEventId}`, {
+        });
+        if (response.data.success) {
+          alert('Reserva Eliminada exitosamente.');
+          setShowDelModal(false);
+          // eliminamos el evento de la lista y actualizamos el calendario y los eventos del día seleccionado
+          window.location.href = '/Calendario';
+        } else {
+          alert('Error al Eliminar la reserva.');
+        }
+      } catch (err) {
+        console.error(err);
+        alert('Error al Eliminar la reserva.');
+      }
+    }
+  };
+
+  const handleAddEvento = async () => {
+    if (!nombreEvento || !inicioEvento || !terminoEvento) {
+      alert('Todos los campos son obligatorios.');
+    }
+    try {
+      const cliente = localStorage.getItem('profesionalSeleccionado')
+      let response
+      if (!cliente) {
+        alert('Debes seleccionar un profesional para reservar.');
+        return;
+      }
+      if (localStorage.getItem('token.tipoUsuario') === 'profesional') {
+        response = await axios.put(`http://localhost:3000/api/users/addReserva`, {dia: diaSeleccionado, mes: mes + 1, anio: anio, inicio: inicioEvento, termino: terminoEvento, nombre: nombreEvento, idUsuario: localStorage.getItem('userData'), idCliente: localStorage.getItem('profesionalSeleccionado')  });
+      }
+      else {
+        response = await axios.put(`http://localhost:3000/api/users/addReserva`, {dia: diaSeleccionado, mes: mes + 1, anio: anio, inicio: inicioEvento, termino: terminoEvento, nombre: nombreEvento, idUsuario: localStorage.getItem('profesionalSeleccionado'), idCliente: localStorage.getItem('userData')  });
+      }
+      
+      if (response.data.success) {
+        alert('Reserva agregada exitosamente.');
+      } else {
+        alert('Error al agregar la reserva.');
+      }
+    } catch (err) {
+      console.error(err);
+      alert('Error del servidor al agregar la reserva.');
+    }
+  }
 
   return (
     <IonPage>
@@ -403,6 +473,7 @@ const Calendario = () => {
                       <IonButton 
                         className="agregar-bt-evento"
                         routerLink="/MetodoPago"
+                        onClick={handleAddEvento}
                       > 
                         Añadir Evento
                       </IonButton>
@@ -416,6 +487,19 @@ const Calendario = () => {
             </div>
           </div>
         </div>
+        <IonModal isOpen={showDelModal} className="ion-modal" onDidDismiss={() => setShowDelModal(false)}>
+        <div className="modal-container">
+            <h2 className="modal-header">Eliminar Reserva</h2>
+            <IonLabel position="stacked">¿Quieres eliminar esta reserva?</IonLabel>
+              
+            <IonButton color={'danger'} expand="full" onClick={handleDelEvento}>
+              Eliminar
+            </IonButton>
+            <IonButton className="modal-button" expand="full" color="secondary" onClick={() => setShowDelModal(false)}>
+              Cancelar
+            </IonButton>
+          </div>
+        </IonModal>
       </IonContent>
       <IonFooter>
         <IonToolbar>

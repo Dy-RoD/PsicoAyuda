@@ -1,0 +1,18 @@
+.titleProfesionales{
+    font-size: 30px;
+}
+
+.profesionales{
+    padding-bottom: 25px;
+}
+
+.nombreProfesional{
+    font-weight: bold;
+    font-size: 30px;
+    padding-left: 15px;
+}
+
+.calProfesional{
+    padding-left: 15px;
+    font-size: 30px;
+}

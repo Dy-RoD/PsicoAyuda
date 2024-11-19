@@ -25,6 +25,11 @@
     text-transform: capitalize;
 }
 
+.recomendList{
+    text-Transform: capitalize;
+
+}
+
 .calificaciones{
     font-size: 4vw;
     position: relative;
@@ -43,6 +48,21 @@
     color: #fff700;
 }
 
+.chateaBt{
+    
+    --border-radius: 40px;
+    --border: none;
+    --box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.3);
+    --font-size: 12px;
+    --text-transform: uppercase;
+    margin-right: 15px;
+}
+
+.chateaBt ion-icon{
+    color: #25D366;
+    font-size: 40px;
+}
+
 .reservaBt{
     --background: #00D0FF;
     --border-radius: 40px;
@@ -53,10 +73,15 @@
     --text-transform: uppercase;
 }
 
-
+.masClientes{
+    color: blue;
+    position: relative;
+    bottom: 20px;
+}
 
 .star{
     width: 15px;
+    padding-right: 3px;
 }
 
 .informacion section h2{
@@ -64,8 +89,12 @@
     font-weight: bold;
 }
 
-.UserComment{
-    font-weight: bold;
+.UserComment:not(p){
+    text-transform: capitalize;
+}
+
+.noData{
+    color: gray;
 }
 
 .informacion section ul{
@@ -88,18 +117,10 @@
     padding-top: 20px;
 }
 
-/*.container-Recomendacion 
-.container-Recomendaciones ul li{
-    color: transparent;
-    text-shadow: 1px 1px 6px #000000;
-    padding-bottom: 20px;
+.urls{
+    color: rgba(0, 0, 0, 0.541);
+    text-decoration: none;
 }
-
-
-.container-Recomendaciones ul li img{
-    filter: blur(3px);
-}
-*/
 .container-Recomendaciones ul li{
     padding-top: 20px;
 }
