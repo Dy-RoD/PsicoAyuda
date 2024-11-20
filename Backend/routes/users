@@ -111,6 +111,24 @@ router.get('/perfil/:id', (req, res) => {
     });
   });
 
+  router.post('/addComentario', (req, res) => {
+    const { comentario, idProfesional, idCliente } = req.body;
+    const consulta  = 'INSERT INTO comentarios (comentario, idProfesional, idCliente) VALUES (?,?,?)';
+    db.query(consulta, [comentario, idProfesional, idCliente], (err, results) => {
+        if (err) throw err;
+        res.json({ success: true});
+    });
+  });
+
+  router.post('/updateCalificacion', (req, res) => {
+    const { id, calificacion } = req.body;
+    const consulta  = 'UPDATE usuarios SET calificacion = ? WHERE id = ?';
+    db.query(consulta, [calificacion, id], (err, results) => {
+        if (err) throw err;
+        res.json({ success: true});
+    });
+  });
+
   router.put('/delReserva/:idReserva', async (req, res) => {
     const userId = req.params.idReserva;
     const query = `UPDATE reservas SET visible = False WHERE id = ?`

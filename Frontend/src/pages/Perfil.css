@@ -103,11 +103,13 @@
 
 .UserComment:not(p){
     text-transform: capitalize;
+    padding-bottom: 10px;
 }
 
-.noData{
-    color: gray;
+.pComment{
+    padding-top: 3px;
 }
+
 
 .informacion section ul{
     padding-bottom: 35px;
@@ -141,6 +143,40 @@
     padding-top: 20px;
 }
 
+.modalComentario {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+  }
+  
+  .rating-stars {
+    display: flex;
+    justify-content: center;
+    margin: 20px 0;
+  }
+  
+  .star-icon {
+    font-size: 32px;
+    margin: 0 5px;
+    cursor: pointer;
+    color: #ffd700; /* Amarillo para las estrellas seleccionadas */
+  }
+  
+  .star-icon:hover {
+    transform: scale(1.2);
+    transition: transform 0.2s;
+  }
+  
+  .add-button, .delete-button {
+    margin-left: 10px;
+  }
+  
+  .noData {
+    color: gray;
+    font-style: italic;
+    text-align: center;
+  }
 
 
 @media screen and (max-width: 404px){

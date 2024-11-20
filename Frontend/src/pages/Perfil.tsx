@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { IonPage, IonHeader, IonToolbar, IonTitle, IonContent, IonFooter, IonButton, IonIcon, IonButtons, IonImg, IonMenuButton, IonCheckbox, IonInput, IonModal } from '@ionic/react';
-import { star, heartOutline, addCircleOutline, openOutline, logoWhatsapp, trash } from 'ionicons/icons';
+import { IonPage, IonHeader, IonToolbar, IonTitle, IonContent, IonFooter, IonButton, IonIcon, IonButtons, IonImg, IonMenuButton, IonCheckbox, IonInput, IonModal, IonAlert } from '@ionic/react';
+import { star, heartOutline, addCircleOutline, openOutline, logoWhatsapp, trash, starOutline } from 'ionicons/icons';
 import './Perfil.css';
 import axios from 'axios';
-
+import { jwtDecode } from "jwt-decode";
 interface Recomendacion {
   descripcion: string;
   url: string;
@@ -19,6 +19,13 @@ interface Comentario {
   nombre: string;
   apellido: string;
   comentario: string;
+}
+
+interface Decoded {
+  id: number;
+  nombre: string;
+  apellido: string;
+  tipoUsuario: string;
 }
 
 const Perfil: React.FC = () => {
@@ -55,7 +62,72 @@ const Perfil: React.FC = () => {
   const [showAddModal, setShowAddModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [itemsToDelete, setItemsToDelete] = useState<any[]>([]);
-  
+  const [showAddComentModal, setshowAddComentModal] = useState(false);
+  const [showRatingModal, setShowRatingModal] = useState(false);
+  const [newComment, setNewComment] = useState('');
+  const [error, setError] = useState('');
+  const [rating, setRating] = useState(0);
+  let xdd = 7
+  console.log(xdd/2)
+  const handleNextModal = () => {
+    if (!newComment.trim()) {
+      setError('El comentario no puede estar vacío.');
+      return;
+    }
+    setError('');
+    setshowAddComentModal(false);
+    setShowRatingModal(true);
+  };
+
+  const handleRate = (stars: number) => {
+    setRating(stars);
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    let verificador = 0;
+    if (rating === 0) {
+      alert('Por favor selecciona una calificación.');
+      return;
+    }
+    const newRating = (parseInt(calificacion) + rating)/ 2;
+    try {
+      const response = await axios.post('http://localhost:3000/api/users/addComentario', {
+        comentario: newComment, 
+        idProfesional: localStorage.getItem('profesionalSeleccionado'), 
+        idCliente: localStorage.getItem('userData'),
+      });
+      if (response.data.success) 
+        verificador= 1
+      else{
+        alert('Error al añadir comentario');
+      }
+    } catch (err) {
+      alert('Error del servidor al añadir comentario');
+    }
+    if (verificador === 1) {
+      try {
+        const res = await axios.post('http://localhost:3000/api/users/updateCalificacion', {
+          id: localStorage.getItem('profesionalSeleccionado'),
+          calificacion: newRating,
+        });
+        if (res.data.success) {
+        alert('¡Comentario y calificación agregados exitosamente!');
+        verificador= 0;
+        setShowRatingModal(false);
+        setshowAddComentModal(false);
+        setNewComment('');
+        setRating(0);
+        window.location.href = '/Perfil';
+        }
+        else{
+          alert('Error al actualizar la calificación');
+        }
+      } catch (err) {
+        alert('Error del servidor al actualizar la calificación');
+      }
+    }
+  };
   const handleDelete = () => {
     // Aquí debes agregar la lógica para eliminar los elementos seleccionados desde la base de datos
     // Cerrar modal después de eliminación
@@ -292,7 +364,7 @@ const Perfil: React.FC = () => {
             <div className="container-Comentarios">
                {localStorage.getItem('profesionalSeleccionado') ? (
                 <h2>Comentarios
-                  <IonButton onClick={() => setShowAddModal(true)} className="add-button">
+                  <IonButton onClick={() => setshowAddComentModal(true)} className="add-button">
                   <IonIcon icon={addCircleOutline} />
                   </IonButton>
                 </h2>
@@ -308,7 +380,7 @@ const Perfil: React.FC = () => {
                   comentarios.map((comentario, index) => (
                     <li key={index} className="UserComment">
                       <strong>{comentario.nombre} {comentario.apellido}:</strong>
-                      <p>{comentario.comentario}</p>
+                      <p className='pComment'>{comentario.comentario}</p>
                     </li>
                   ))
                 )}
@@ -317,6 +389,40 @@ const Perfil: React.FC = () => {
             <hr />
           </section>
         </div>
+
+        {/* Modal para escribir comentario */}
+        <IonModal isOpen={showAddComentModal} className="ion-modal" onDidDismiss={() => setshowAddComentModal(false)}>
+          <div className="modal-container">
+            <h3 className="modal-header">Escribe tu comentario</h3>
+            <div className='modal-input'>
+              <IonInput
+              value={newComment}
+              onIonChange={(e: CustomEvent) => setNewComment(e.detail.value as string)}
+              />
+              <IonButton color={'secondary'} onClick={() => setshowAddComentModal(false)}>Cerrar</IonButton>
+              <IonButton color={'success'} onClick={handleNextModal}>Comentar</IonButton>
+            </div>
+          </div>
+        </IonModal>
+
+        {/* Modal para calificar */}
+        <IonModal isOpen={showRatingModal} className="ion-modal" onDidDismiss={() => setShowRatingModal(false)}>
+          <div className="modal-container">
+            <h3 className="modal-header">Califica tu experiencia</h3>
+            <div className="rating-stars">
+              {[1, 2, 3, 4, 5].map((starValue) => (
+                <IonIcon
+                  key={starValue}
+                  icon={starValue <= rating ? star : starOutline}
+                  className="star-icon"
+                  onClick={() => handleRate(starValue)}
+                />
+              ))}
+            </div>
+            <IonButton color={'secondary'} onClick={() => setShowRatingModal(false)}>Cancelar</IonButton>
+            <IonButton color={'success'} onClick={handleSubmit}>Calificar</IonButton>
+          </div>
+        </IonModal>
 
         {/* Modal para Agregar */}
         <IonModal isOpen={showAddModal} onDidDismiss={() => setShowAddModal(false)}>

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 20, 2024 at 04:17 AM
+-- Generation Time: Nov 20, 2024 at 07:51 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -39,7 +39,8 @@ CREATE TABLE `comentarios` (
 --
 
 INSERT INTO `comentarios` (`id`, `comentario`, `idProfesional`, `idCliente`) VALUES
-(1, '¡Recomendadísima! Mi pareja y yo pudimos salir adelante después de su ayuda a través de las sesiones.', 5, 7);
+(1, '¡Recomendadísima! Mi pareja y yo pudimos salir adelante después de su ayuda a través de las sesiones.', 5, 7),
+(2, 'Muy buena Psicologa, yo (el admin) mismo la probe', 5, 1);
 
 -- --------------------------------------------------------
 
@@ -184,7 +185,7 @@ CREATE TABLE `usuarios` (
 
 INSERT INTO `usuarios` (`id`, `nombre`, `apellido`, `rut`, `region`, `email`, `fono`, `fotoPerfil`, `password`, `tipoUsuario`, `calificacion`) VALUES
 (1, 'Dylan', 'Rodriguez', '21233531-2', 'valparaiso', 'dylanrod159@gmail.com', '123123123', NULL, '$2a$10$0XnYrl1ab081Y9igOvrOhusu.v/fF1a/T6hcYyUQobAUAMImhEeSm', 'admin', 4.9),
-(5, 'lupita', 'rodriguez', '13244478-9', 'valparaiso', 'lupita@prueba', '+56988888888', NULL, '$2a$10$O2LrSRzI7V/sdFW2.m/IhuIFBZCDF1KYNHO8hJaOArNXp5bC3StOm', 'profesional', 4.5),
+(5, 'lupita', 'rodriguez', '13244478-9', 'valparaiso', 'lupita@prueba', '+56988888888', NULL, '$2a$10$O2LrSRzI7V/sdFW2.m/IhuIFBZCDF1KYNHO8hJaOArNXp5bC3StOm', 'profesional', 4),
 (6, 'lale', 'anabalon', '18239223-5', 'valparaiso', 'lale@man.com', '+56969696969', NULL, '$2a$10$pqFeXRuGTQWgIMQZKowYpuMqBH4GJsrxxSoTEvoJPimqqNLsDO/82', 'profesional', 4.9),
 (7, 'Bella', 'Kodpher', '11111111-1', 'metropolitana', 'bellaKodpher@gmail.com', '945345345', NULL, '$2a$10$WxwS9rxSdkWq5ze/q.VyGO3t2mNin7WO13oe5LJLhWLU6TYdvIO5W', 'cliente', 4.9);
 
@@ -257,7 +258,7 @@ ALTER TABLE `usuarios`
 -- AUTO_INCREMENT for table `comentarios`
 --
 ALTER TABLE `comentarios`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `especialidades`
