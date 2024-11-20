@@ -83,8 +83,6 @@ router.get('/perfil/:id', (req, res) => {
       res.json(results)
     });
   });
-  
-
   router.get('/reservas/:userId', (req, res) => {
     const userId = req.params.userId;
   

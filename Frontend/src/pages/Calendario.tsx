@@ -21,7 +21,14 @@ import {
 import './Calendario.css';
 import { balloonOutline, calendarOutline, arrowBackOutline, arrowForwardOutline, closeOutline, key } from 'ionicons/icons';
 import axios from 'axios';
+import { jwtDecode } from "jwt-decode"
 
+interface Decoded {
+  id: number;
+  nombre: string;
+  apellido: string;
+  tipoUsuario: string;
+}
 const Calendario = () => {
   if (!localStorage.getItem('token')) {
     window.location.href = '/home';
@@ -47,8 +54,22 @@ const Calendario = () => {
   const [eventosDelDia, setEventosDelDia] = useState<any[]>([]);
   const [selectedEventId, setSelectedEventId] = useState<number | null>(null);
   const [showDelModal, setShowDelModal] = useState(false);
+  let nombre
   let userId;
-  // Nueva función para cargar los eventos desde el archivo JSON
+  let tipoUsuario
+  const token = localStorage.getItem('token');
+  if (token) {
+    try {
+      // Decodificar el token
+      const decoded: Decoded = jwtDecode(token);
+      nombre = decoded.nombre + ' ' + decoded.apellido
+      tipoUsuario = decoded.tipoUsuario
+    } catch (error) {
+      console.error('Error al decodificar el token:', error);
+    }
+  } else {
+    console.log('No hay un token disponible');
+  }
   useEffect(() => {
     const cargarEventos = async () => {
       if (localStorage.getItem('profesionalSeleccionado')) {
@@ -339,7 +360,7 @@ const Calendario = () => {
       <IonHeader>
         <IonToolbar>
           <IonTitle className='logoBtn'>
-            <IonButton routerLink="/"><IonImg className='logo' src='../assets/images/logo.png' /></IonButton>
+            <IonButton><IonImg className='logo' src='../assets/images/logo.png' /></IonButton>
           </IonTitle>
           <IonButtons slot='end'><IonMenuButton /></IonButtons>
         </IonToolbar>
@@ -347,7 +368,7 @@ const Calendario = () => {
 
       <IonContent>
         <div className='datosUsuario'>
-          <h1 className="psicologo">Lupita Rodriguez - Psicóloga </h1>
+          <h1 className="Usuario" autoCapitalize='true' >{nombre}</h1>
           <IonButton className='volverPerfil' routerLink='/Perfil'>Ir al perfil</IonButton>
         </div>
         
@@ -434,56 +455,58 @@ const Calendario = () => {
               <div className="eventos">
                 {eventosDelDia}
               </div>
-              <div className="contenedor-aniadir-evento">
-                {isOpen && (
-                  <div className="agregar-evento">
-                    <div className="agregar-titulo-evento">
-                      <div className="titulo-evento">Agregar Evento</div>
-                      <IonButton className='cerrarBtn' fill="clear" onClick={toggleForm}>
-                        <IonIcon icon={closeOutline} />
-                      </IonButton>
-                    </div>
-                    <div className="detalles-evento">
-                      <div className="input-evento">
-                        <IonInput 
-                          placeholder="Nombre Reserva" 
-                          className="nombre-evento" 
-                          value={nombreEvento} 
-                          onIonInput={handleNombreInput} 
-                        />
+              {tipoUsuario === 'profesional' ? (
+                <div className="contenedor-aniadir-evento">
+                  {isOpen && (
+                    <div className="agregar-evento">
+                      <div className="agregar-titulo-evento">
+                        <div className="titulo-evento">Agregar Evento</div>
+                        <IonButton className='cerrarBtn' fill="clear" onClick={toggleForm}>
+                          <IonIcon icon={closeOutline} />
+                        </IonButton>
                       </div>
-                      <div className="input-evento">
-                        <IonInput 
-                          placeholder="Hora Inicio" 
-                          className="inicio-evento" 
-                          value={inicioEvento} 
-                          onIonInput={(e: { target: { value: string; }; }) => handleHoraInput(e, setInicioEvento)} 
-                        />
+                      <div className="detalles-evento">
+                        <div className="input-evento">
+                          <IonInput 
+                            placeholder="Nombre Reserva" 
+                            className="nombre-evento" 
+                            value={nombreEvento} 
+                            onIonInput={handleNombreInput} 
+                          />
+                        </div>
+                        <div className="input-evento">
+                          <IonInput 
+                            placeholder="Hora Inicio" 
+                            className="inicio-evento" 
+                            value={inicioEvento} 
+                            onIonInput={(e: { target: { value: string; }; }) => handleHoraInput(e, setInicioEvento)} 
+                          />
+                        </div>
+                        <div className="input-evento">
+                          <IonInput 
+                            placeholder="Hora Termino" 
+                            className="termino-evento" 
+                            value={terminoEvento} 
+                            onIonInput={(e: { target: { value: string; }; }) => handleHoraInput(e, setTerminoEvento)} 
+                          />
+                        </div>
                       </div>
-                      <div className="input-evento">
-                        <IonInput 
-                          placeholder="Hora Termino" 
-                          className="termino-evento" 
-                          value={terminoEvento} 
-                          onIonInput={(e: { target: { value: string; }; }) => handleHoraInput(e, setTerminoEvento)} 
-                        />
+                      <div className="agregar-boton-evento">
+                        <IonButton 
+                          className="agregar-bt-evento"
+                          routerLink="/MetodoPago"
+                          onClick={handleAddEvento}
+                        > 
+                          Añadir Evento
+                        </IonButton>
                       </div>
                     </div>
-                    <div className="agregar-boton-evento">
-                      <IonButton 
-                        className="agregar-bt-evento"
-                        routerLink="/MetodoPago"
-                        onClick={handleAddEvento}
-                      > 
-                        Añadir Evento
-                      </IonButton>
-                    </div>
-                  </div>
-                )}
-                <IonButton className="aniadir-evento" onClick={toggleForm}>
-                  <IonIcon icon={calendarOutline} />
-                </IonButton>
-              </div>
+                  )}
+                  <IonButton className="aniadir-evento" onClick={toggleForm}>
+                    <IonIcon icon={calendarOutline} />
+                  </IonButton>
+                </div>
+              ) : null }
             </div>
           </div>
         </div>

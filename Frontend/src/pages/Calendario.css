@@ -56,10 +56,11 @@ header{
     font-family: "Roboto", sans-serif;
 }
 
-.psicologo{
+.Usuario{
     padding: 20px;
     font-family: 'Roboto' , sans-serif;
     margin-bottom: 10px;
+    text-transform: capitalize;
 }
 
 .body-calendario{

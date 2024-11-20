@@ -8,7 +8,7 @@ require('dotenv').config();
 
 router.post('/login', (req, res) => {
     const { email, password } = req.body;
-    db.query('SELECT * FROM usuarios WHERE email = ?', [email], (err, results) => {
+    db.query('SELECT id,nombre,apellido,tipoUsuario,password FROM usuarios WHERE email = ?', [email], (err, results) => {
         if (err) throw err;
         if (results.length === 0) {
             return res.status(401).json({ message: 'Usuario no encontrado' });
@@ -20,7 +20,7 @@ router.post('/login', (req, res) => {
             return res.status(401).json({ message: 'Contraseña incorrecta' });
         }
         // Crear token JWT
-        const token = jwt.sign({ id: user.id, username: user.username, tipoUsuario: user.tipoUsuario }, process.env.SECRET_KEY, {
+        const token = jwt.sign({ id: user.id, nombre: user.nombre, apellido: user.apellido, tipoUsuario: user.tipoUsuario }, process.env.SECRET_KEY, {
             expiresIn: '1h'
         });
 

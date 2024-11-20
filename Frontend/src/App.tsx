@@ -38,6 +38,8 @@ import Busqueda from './components/Busqueda';
 import Calendario from './pages/Calendario';
 import Perfil from './pages/Perfil';
 import Profesionales from './pages/Profesionales';
+import Servicios from './pages/Servicios';
+import QuienesSomos from './pages/QuienesSomos';
 
 setupIonicReact();
 
@@ -64,6 +66,12 @@ const App: React.FC = () => (
         </Route>
         <Route exact path="/Perfil">
           <Perfil />
+        </Route>
+        <Route exact path="/servicios">
+          <Servicios />
+        </Route>
+        <Route exact path="/QuienesSomos">
+          <QuienesSomos />
         </Route>
         <Route path="/profesionales/:region" component={Profesionales} />
       </IonRouterOutlet>

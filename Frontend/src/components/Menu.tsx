@@ -15,6 +15,7 @@ function Menu() {
       localStorage.removeItem('token');
       localStorage.removeItem('userData');
       localStorage.removeItem('profesionalSeleccionado');
+      localStorage.removeItem('nombreUsuario');
       setIsAuthenticated(false);
       window.location.href = "/Home";
     };
@@ -38,13 +39,10 @@ function Menu() {
         <IonContent className="ion-padding">
         <IonList>
             <IonItem>
-                <IonButton className='menuBtn' routerLink="/Perfil">Inicio</IonButton>
+                <IonButton className='menuBtn' routerLink='/Servicios'>Servicios</IonButton>
             </IonItem>
             <IonItem>
-                <IonButton className='menuBtn'>Servicios</IonButton>
-            </IonItem>
-            <IonItem>
-                <IonButton className='menuBtn'>Quienes somos</IonButton>
+                <IonButton className='menuBtn' routerLink='/QuienesSomos'>Quienes somos</IonButton>
             </IonItem>
             {isAuthenticated ? (
               <>

@@ -35,7 +35,6 @@ const Home = () => {
   };
 
   const handleRecover = async () => {
-    console.log(rut,correo);
     if (!rut || !correo) {
       alert('Por favor ingresa todos los campos');
       return; // Si faltan datos, no enviar la solicitud
@@ -57,7 +56,6 @@ const Home = () => {
   };
 
   const handleUpdatePassword = async () => {
-    console.log(localStorage.getItem('recoverId'), newPassword);
     try {
       const response = await axios.post('http://localhost:3000/api/auth/changePass', {
         userId: localStorage.getItem('recoverId'),
@@ -102,7 +100,7 @@ const Home = () => {
       <IonHeader>
         <IonToolbar>
           <IonTitle className="logoBtn">
-            <IonButton routerLink="/">
+            <IonButton>
               <IonImg className="logo" src="../assets/images/logo.png" />
             </IonButton>
           </IonTitle>

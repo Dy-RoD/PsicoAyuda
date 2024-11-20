@@ -25,6 +25,18 @@
     text-transform: capitalize;
 }
 
+.add-button{
+    color: rgb(0, 183, 255);
+    position: relative;
+    bottom: 7px;
+}
+
+.delete-button{
+    color: red;
+    position: relative;
+    bottom: 7px;
+}
+
 .recomendList{
     text-Transform: capitalize;
 

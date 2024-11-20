@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { IonPage, IonHeader, IonToolbar, IonTitle, IonContent, IonFooter, IonButton, IonIcon, IonButtons, IonImg, IonMenuButton } from '@ionic/react';
-import { star, heartOutline, addCircleOutline, openOutline, logoWhatsapp } from 'ionicons/icons';
+import { IonPage, IonHeader, IonToolbar, IonTitle, IonContent, IonFooter, IonButton, IonIcon, IonButtons, IonImg, IonMenuButton, IonCheckbox, IonInput, IonModal } from '@ionic/react';
+import { star, heartOutline, addCircleOutline, openOutline, logoWhatsapp, trash } from 'ionicons/icons';
 import './Perfil.css';
 import axios from 'axios';
 
@@ -31,8 +31,6 @@ const Perfil: React.FC = () => {
     const storedProfesional = localStorage.getItem('profesionalSeleccionado');
     if (storedProfesional) {
       setProfesional(JSON.parse(storedProfesional));
-    } else {
-      console.error('No se encontraron datos del profesional.');
     }
 
     if (localStorage.getItem('profesionalSeleccionado')) {
@@ -41,7 +39,6 @@ const Perfil: React.FC = () => {
     else {
       userId = localStorage.getItem('userData');
     }
-    console.log("id",userId);
   }, []);
 
   const [nombre, setNombre] = useState('');
@@ -55,7 +52,21 @@ const Perfil: React.FC = () => {
   const [recomendaciones, setRecomendaciones] = useState<Cliente[]>([]);
   const [comentarios, setComentarios] = useState<Comentario[]>([]);
   const [visibleClientes, setVisibleClientes] = useState(2);
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [itemsToDelete, setItemsToDelete] = useState<any[]>([]);
   
+  const handleDelete = () => {
+    // Aquí debes agregar la lógica para eliminar los elementos seleccionados desde la base de datos
+    // Cerrar modal después de eliminación
+    setShowDeleteModal(false);
+  };
+
+  const handleAddTitle = () => {
+    // Aquí puedes agregar la lógica para agregar un título a la base de datos
+    setShowAddModal(false);
+  };
+
   useEffect(() => {
     
     axios.get(`http://localhost:3000/api/users/perfil/${userId}`, { 
@@ -70,7 +81,6 @@ const Perfil: React.FC = () => {
       setExperiencias(response.data.experiencias);
     })
     .catch(error => {
-      console.error(error);
       alert("Error al obtener los datos del usuario.");
     });
   }, []);
@@ -81,24 +91,20 @@ const Perfil: React.FC = () => {
         if (localStorage.getItem('token.id') === userId) {
           if  (localStorage.getItem('token.tipoUsuario') === 'profesional') {
           const response = await axios.get<Cliente[]>(`http://localhost:3000/api/users/recomendacionesPro/${userId}`);
-          console.log("Datos recibidos del backend token:", response.data);
           setRecomendaciones(response.data)
           } else {
             const response = await axios.get<Cliente[]>(`http://localhost:3000/api/users/recomendacionesCli/${userId}`);
-            console.log("Datos recibidos del backend token:", response.data);
             setRecomendaciones(response.data)
           }
         }
         else{
           const response = await axios.get<Cliente[]>(`http://localhost:3000/api/users/recomendacionesPro/${userId}`);
-          console.log("Datos recibidos del backend sin token:", response.data);
           setRecomendaciones(response.data)
         }
       } catch (error) {
-        console.error('Error al obtener recomendaciones:', error);
+        alert('Error al obtener recomendaciones');
       }
     };
-    console.log("recomendaciones", recomendaciones);
     fetchRecomendaciones();
   }, []);
 
@@ -112,18 +118,24 @@ const Perfil: React.FC = () => {
         const response = await axios.get<Comentario[]>(`http://localhost:3000/api/users/comentarios/${userId}`);
         setComentarios(response.data);
       } catch (error) {
-        console.error('Error al obtener los comentarios:', error);
+        alert("Error al obtener los comentarios");
       }
     };
 
     fetchComentarios();
   }, []);
+
+  const  handleCalendario = async () => {
+    if (localStorage.getItem('nombreUsuario')) localStorage.removeItem('nombreUsuario');
+    localStorage.setItem('nombreUsuario', nombre +' '+ apellido);
+    window.location.href = `./Calendario`;
+  }
   
   return (
     <IonPage>
         <IonHeader>
         <IonToolbar>
-          <IonTitle className='logoBtn'><IonButton routerLink="/"><IonImg className='logo' src='../assets/images/logo.png'/></IonButton></IonTitle>
+          <IonTitle className='logoBtn'><IonButton><IonImg className='logo' src='../assets/images/logo.png'/></IonButton></IonTitle>
           <IonButtons slot='end'><IonMenuButton /></IonButtons>
         </IonToolbar>
       </IonHeader>
@@ -144,14 +156,23 @@ const Perfil: React.FC = () => {
                 </IonButton>
               </a>
               {/* `./Calendario${id}` */}
-              <IonButton className="reservaBt" routerLink={`./Calendario`}>¡Reserva!</IonButton>
+              <IonButton className="reservaBt" onClick={handleCalendario} routerLink={`./Calendario`}>¡Reserva!</IonButton>
             </div>
           </section>
 
           {/* Sección Títulos */}
           <section className="seccionTitulos">
             <div className="container-Titulos">
-              <h2 className="titulo">Títulos</h2>
+              {!localStorage.getItem('profesionalSeleccionado') ? (
+                <h2>Títulos
+                <IonButton onClick={() => setShowAddModal(true)} className="add-button">
+                <IonIcon icon={addCircleOutline} />
+                </IonButton>
+                <IonButton onClick={() => setShowDeleteModal(true)} className="delete-button">
+                <IonIcon icon={trash} />
+                </IonButton>
+                </h2>
+              ): <h2>Títulos</h2>}
               <ul>
                 {titulos.length > 0 ? (
                   titulos.map((titulo, index) => (
@@ -170,7 +191,16 @@ const Perfil: React.FC = () => {
           {/* Sección Especialidades */}
           <section className="seccionEspecialidades">
             <div className="container-Especialidades">
-              <h2>Especialidades</h2>
+              {!localStorage.getItem('profesionalSeleccionado') ? (
+                <h2>Especialidades
+                <IonButton onClick={() => setShowAddModal(true)} className="add-button">
+                <IonIcon icon={addCircleOutline} />
+                </IonButton>
+                <IonButton onClick={() => setShowDeleteModal(true)} className="delete-button">
+                <IonIcon icon={trash} />
+                </IonButton>
+                </h2>
+              ): <h2>Especialidades</h2>}
               <ul>
                 {especialidades.length > 0 ? (
                   especialidades.map((especialidad, index) => (
@@ -189,7 +219,16 @@ const Perfil: React.FC = () => {
           {/* Sección Experiencias */}
           <section className="seccionExperiencias">
             <div className="container-Experiencias">
-              <h2>Experiencias</h2>
+              {!localStorage.getItem('profesionalSeleccionado') ? (
+                <h2>Experiencias
+                <IonButton onClick={() => setShowAddModal(true)} className="add-button">
+                <IonIcon icon={addCircleOutline} />
+                </IonButton>
+                <IonButton onClick={() => setShowDeleteModal(true)} className="delete-button">
+                <IonIcon icon={trash} />
+                </IonButton>
+                </h2>
+              ): <h2>Experiencias</h2>}
               <ul>
                 {experiencias.length > 0 ? (
                   experiencias.map((experiencia, index) => (
@@ -208,9 +247,16 @@ const Perfil: React.FC = () => {
           {/* Sección Recomendaciones */}
           <section className="seccionRecomendaciones">
             <div className="container-Recomendaciones">
-              <h2>
-                <IonIcon icon={heartOutline} /> Recomendaciones
-              </h2>
+              {!localStorage.getItem('profesionalSeleccionado') ? (
+                <h2>Recomendaciones
+                <IonButton onClick={() => setShowAddModal(true)} className="add-button">
+                <IonIcon icon={addCircleOutline} />
+                </IonButton>
+                <IonButton onClick={() => setShowDeleteModal(true)} className="delete-button">
+                <IonIcon icon={trash} />
+                </IonButton>
+                </h2>
+              ): <h2>Recomendaciones</h2>}
               <ul>
                 {recomendaciones.length === 0 || recomendaciones.every(recomendacion => !recomendacion.nombre || !recomendacion.apellido ) ? (
                     <li className='noData'>No hay recomendaciones disponibles</li>
@@ -244,7 +290,17 @@ const Perfil: React.FC = () => {
           {/* Sección Comentarios */}
           <section className="seccionComentarios">
             <div className="container-Comentarios">
-              <h2>Comentarios</h2>
+               {localStorage.getItem('profesionalSeleccionado') ? (
+                <h2>Comentarios
+                  <IonButton onClick={() => setShowAddModal(true)} className="add-button">
+                  <IonIcon icon={addCircleOutline} />
+                  </IonButton>
+                </h2>
+              ): <h2>Comentarios 
+                  <IonButton onClick={() => setShowDeleteModal(true)} className="delete-button">
+                  <IonIcon icon={trash} />
+                  </IonButton>
+                </h2>}
               <ul>
                 {comentarios.length === 0 || comentarios.every(comentario => !comentario.nombre || !comentario.apellido || !comentario.comentario) ? (
                   <li className='noData'>No hay comentarios disponibles</li>
@@ -261,6 +317,43 @@ const Perfil: React.FC = () => {
             <hr />
           </section>
         </div>
+
+        {/* Modal para Agregar */}
+        <IonModal isOpen={showAddModal} onDidDismiss={() => setShowAddModal(false)}>
+          <div className="modal-content">
+            <h3>Agregar Título</h3>
+            <IonInput placeholder="Ingrese el título" />
+            <IonButton onClick={handleAddTitle}>Agregar</IonButton>
+            <IonButton onClick={() => setShowAddModal(false)}>Cerrar</IonButton>
+          </div>
+        </IonModal>
+
+        {/* Modal para Eliminar */}
+        <IonModal isOpen={showDeleteModal} onDidDismiss={() => setShowDeleteModal(false)}>
+          <div className="modal-content">
+            <h3>Eliminar Elementos</h3>
+            <ul>
+              {titulos.map((titulo, index) => (
+                <li key={index}>
+                  <IonCheckbox
+                    onIonChange={() => {
+                      const newSelection = [...itemsToDelete];
+                      if (newSelection.includes(titulo)) {
+                        newSelection.splice(newSelection.indexOf(titulo), 1);
+                      } else {
+                        newSelection.push(titulo);
+                      }
+                      setItemsToDelete(newSelection);
+                    }}
+                  />
+                  {titulo}
+                </li>
+              ))}
+            </ul>
+            <IonButton onClick={handleDelete}>Confirmar Eliminación</IonButton>
+            <IonButton onClick={() => setShowDeleteModal(false)}>Cerrar</IonButton>
+          </div>
+        </IonModal>
         <IonFooter className='fut'>
             <p>@2024 hecho por Dylan Rodriguez</p>    
         </IonFooter>  

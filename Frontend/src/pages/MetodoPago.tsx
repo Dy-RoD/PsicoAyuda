@@ -10,7 +10,7 @@ const MetodoPago = () => {
     <IonPage>
       <IonHeader>
         <IonToolbar>
-        <IonTitle className='logoBtn'><IonButton routerLink="/"><IonImg className='logo' src='../assets/images/logo.png'/></IonButton></IonTitle>
+        <IonTitle className='logoBtn'><IonButton><IonImg className='logo' src='../assets/images/logo.png'/></IonButton></IonTitle>
           <IonButtons slot='end'><IonMenuButton /></IonButtons>
         </IonToolbar>
       </IonHeader>
