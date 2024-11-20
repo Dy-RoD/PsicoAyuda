@@ -67,8 +67,7 @@ const Perfil: React.FC = () => {
   const [newComment, setNewComment] = useState('');
   const [error, setError] = useState('');
   const [rating, setRating] = useState(0);
-  let xdd = 7
-  console.log(xdd/2)
+  
   const handleNextModal = () => {
     if (!newComment.trim()) {
       setError('El comentario no puede estar vacío.');
